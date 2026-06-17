@@ -1,0 +1,98 @@
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: #e3d4f5;
+  color: #3b2358;
+}
+
+/* Subtle, tasteful entrance — replaces the old scroll-reveal */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-up {
+  animation: fadeUp 0.75s cubic-bezier(0.21, 0.47, 0.32, 0.98) both;
+}
+
+/* Quiet hover on the step cards */
+.step-card {
+  transition:
+    box-shadow 0.25s ease,
+    transform 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.step-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--mantine-color-mauve-3);
+  box-shadow: 0 14px 34px -18px rgba(82, 48, 114, 0.4);
+}
+
+/* Waitlist form rendered on a dark/purple background */
+.form-on-dark input {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: #ffffff;
+}
+
+.form-on-dark input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.form-on-dark input:focus {
+  border-color: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Header nav links */
+.nav-link {
+  color: var(--mantine-color-black);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.nav-link:hover {
+  color: var(--mantine-color-mauve-7);
+}
+
+.nav-link-light {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.nav-link-light:hover {
+  color: #ffffff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up {
+    animation: none;
+  }
+  .step-card:hover {
+    transform: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
