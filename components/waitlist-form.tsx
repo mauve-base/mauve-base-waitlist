@@ -13,6 +13,7 @@ export function WaitlistForm({
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "done">("idle");
   const [error, setError] = useState<string | null>(null);
+  const [hp, setHp] = useState(""); // honeypot — should stay empty for real users
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -23,10 +24,23 @@ export function WaitlistForm({
     setError(null);
     setStatus("loading");
 
-    // TODO: wire to real backend (Notion / Resend). Stubbed for now.
-    await new Promise((r) => setTimeout(r, 700));
-
-    setStatus("done");
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, website: hp }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok) {
+        setError(data.error ?? "Something went wrong. Please try again.");
+        setStatus("idle");
+        return;
+      }
+      setStatus("done");
+    } catch {
+      setError("Network error. Please check your connection and try again.");
+      setStatus("idle");
+    }
   }
 
   if (status === "done") {
@@ -84,6 +98,22 @@ export function WaitlistForm({
   return (
     <Box w="100%" className={onDark ? "form-on-dark" : undefined}>
       <form onSubmit={handleSubmit} noValidate>
+        <input
+          type="text"
+          name="website"
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          value={hp}
+          onChange={(e) => setHp(e.currentTarget.value)}
+          style={{
+            position: "absolute",
+            left: "-9999px",
+            width: 1,
+            height: 1,
+            opacity: 0,
+          }}
+        />
         <Flex gap="sm" direction={{ base: "column", xs: "row" }} align="start">
           <TextInput
             type="email"
