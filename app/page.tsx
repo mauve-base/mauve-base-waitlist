@@ -67,7 +67,7 @@ export default function Home() {
 
             <Reveal delay={0.18}>
               <Stack gap="14px" mt={{ base: "28px", md: "40px" }} maxW="520px">
-                <Label>Request early access</Label>
+                <Label>Join waitlist</Label>
                 <WaitlistForm />
                 <Text fontSize="xs" color="ink" style={{ opacity: 0.55 }}>
                   No spam. We&rsquo;ll reach out as we onboard vendors.

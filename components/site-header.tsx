@@ -46,7 +46,7 @@ export function SiteHeader() {
               px="18px"
               _hover={{ bg: "mauve.8" }}
             >
-              <NextLink href="/#waitlist">Join waitlist</NextLink>
+              <NextLink href="/waitlist">Join waitlist</NextLink>
             </Button>
           </HStack>
         </Flex>
