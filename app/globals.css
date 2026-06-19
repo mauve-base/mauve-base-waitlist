@@ -8,17 +8,17 @@ html {
 
 body {
   margin: 0;
-  background-color: #ffffff;
+  background-color: #e7e6eb;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
 ::selection {
-  background: #e3d4f5;
-  color: #3b2358;
+  background: #d9c6ef;
+  color: #34186f;
 }
 
-/* Subtle, tasteful entrance — replaces the old scroll-reveal */
+/* ---------- Entrance animation (fallback for non-motion contexts) ---------- */
 @keyframes fadeUp {
   from {
     opacity: 0;
@@ -31,66 +31,42 @@ body {
 }
 
 .fade-up {
-  animation: fadeUp 0.75s cubic-bezier(0.21, 0.47, 0.32, 0.98) both;
+  animation: fadeUp 0.7s cubic-bezier(0.21, 0.47, 0.32, 0.98) both;
 }
 
-/* Quiet hover on the step cards */
-.step-card {
-  transition:
-    box-shadow 0.25s ease,
-    transform 0.25s ease,
-    border-color 0.25s ease;
-}
-
-.step-card:hover {
-  transform: translateY(-2px);
-  border-color: var(--mantine-color-mauve-3);
-  box-shadow: 0 14px 34px -18px rgba(82, 48, 114, 0.4);
-}
-
-/* Waitlist form rendered on a dark/purple background */
-.form-on-dark input {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.28);
-  color: #ffffff;
-}
-
-.form-on-dark input::placeholder {
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.form-on-dark input:focus {
-  border-color: rgba(255, 255, 255, 0.65);
-  background: rgba(255, 255, 255, 0.12);
-}
-
-/* Header nav links */
+/* ---------- Header / footer nav links: thin editorial underline ---------- */
 .nav-link {
-  color: var(--mantine-color-black);
+  color: var(--chakra-colors-ink);
   text-decoration: none;
+  position: relative;
   transition: color 0.15s ease;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 1px;
+  background: var(--chakra-colors-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s cubic-bezier(0.21, 0.47, 0.32, 0.98);
 }
 
 .nav-link:hover {
-  color: var(--mantine-color-mauve-7);
+  color: var(--chakra-colors-accent);
 }
 
-.nav-link-light {
-  color: rgba(255, 255, 255, 0.8);
-  text-decoration: none;
-  transition: color 0.15s ease;
+.nav-link:hover::after {
+  transform: scaleX(1);
 }
 
-.nav-link-light:hover {
-  color: #ffffff;
-}
-
+/* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   .fade-up {
     animation: none;
-  }
-  .step-card:hover {
-    transform: none;
   }
   html {
     scroll-behavior: auto;

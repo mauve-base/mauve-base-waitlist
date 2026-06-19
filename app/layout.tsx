@@ -1,18 +1,13 @@
-import "@mantine/core/styles.css";
 import "./globals.css";
 
 import type { Metadata } from "next";
-import { Fraunces, Inter } from "next/font/google";
-import {
-  ColorSchemeScript,
-  MantineProvider,
-  mantineHtmlProps,
-} from "@mantine/core";
-import { theme } from "./theme";
+import { Space_Grotesk, Inter } from "next/font/google";
+import { Provider } from "./provider";
 
-const fraunces = Fraunces({
+// Display: Space Grotesk (geometric sans). Body: Inter.
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  variable: "--font-fraunces",
+  variable: "--font-space-grotesk",
   display: "swap",
 });
 
@@ -42,20 +37,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      {...mantineHtmlProps}
-      className={`${fraunces.variable} ${inter.variable}`}
+      className={`${spaceGrotesk.variable} ${inter.variable}`}
+      suppressHydrationWarning
     >
-      <head>
-        <ColorSchemeScript defaultColorScheme="light" />
-      </head>
-      <body>
-        <MantineProvider
-          theme={theme}
-          defaultColorScheme="light"
-          forceColorScheme="light"
-        >
-          {children}
-        </MantineProvider>
+      <body suppressHydrationWarning>
+        <Provider>{children}</Provider>
       </body>
     </html>
   );

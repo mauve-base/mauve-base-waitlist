@@ -1,12 +1,6 @@
-import {
-  Box,
-  Card,
-  Container,
-  SimpleGrid,
-  Stack,
-  Text,
-  Title,
-} from "@mantine/core";
+import { Box, Container, Flex, Heading, Text } from "@chakra-ui/react";
+import { Reveal } from "@/components/reveal";
+import { Label, RULE } from "@/components/editorial";
 
 const STEPS = [
   {
@@ -26,68 +20,57 @@ const STEPS = [
   },
 ];
 
-export function StepsSection({
-  tint = "lavender",
-}: {
-  tint?: "lavender" | "white";
-}) {
+export function StepsSection() {
   return (
-    <Box
-      style={{
-        background:
-          tint === "lavender" ? "var(--mantine-color-mauve-0)" : "#ffffff",
-        borderTop: "1px solid var(--mantine-color-mauve-1)",
-      }}
-    >
-      <Container size="xl" py={{ base: 56, sm: 88 }}>
-        <Stack gap={6} mb={48} align="center">
-          <Title
-            order={2}
-            ta="center"
-            style={{
-              fontSize: "clamp(1.85rem, 4vw, 2.5rem)",
-              letterSpacing: "-0.015em",
-            }}
-          >
-            From cold list to warm intro
-          </Title>
-          <Text ta="center" c="dimmed" maw={520}>
-            Ground-level market intelligence for vendors selling into small
-            businesses. Three steps.
-          </Text>
-        </Stack>
+    <Box as="section" style={{ background: "var(--chakra-colors-paper)", borderTop: RULE }}>
+      <Container maxW="1180px" px={{ base: "24px", sm: "40px" }} py={{ base: "64px", md: "104px" }}>
+        <Reveal>
+          <Flex justify="space-between" align="flex-end" pb="20px" style={{ borderBottom: RULE }}>
+            <Label>How it works</Label>
+            <Text
+              fontSize="xs"
+              color="ink"
+              style={{ opacity: 0.55, letterSpacing: "0.1em", textTransform: "uppercase" }}
+            >
+              Three steps
+            </Text>
+          </Flex>
+        </Reveal>
 
-        <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="lg">
-          {STEPS.map((step) => (
-            <Card
-              key={step.n}
-              className="step-card"
-              padding="xl"
-              radius="lg"
-              withBorder
-              style={{
-                background:
-                  tint === "lavender" ? "#ffffff" : "var(--mantine-color-mauve-0)",
-                borderColor: "var(--mantine-color-mauve-2)",
-              }}
+        {STEPS.map((step, i) => (
+          <Reveal key={step.n} delay={i * 0.08}>
+            <Flex
+              direction={{ base: "column", md: "row" }}
+              gap={{ base: "14px", md: "48px" }}
+              align="flex-start"
+              py={{ base: "30px", md: "44px" }}
+              style={{ borderBottom: RULE }}
             >
               <Text
-                ff="var(--font-fraunces), Georgia, serif"
-                fz={26}
-                fw={500}
-                c="mauve.7"
+                fontFamily="heading"
+                fontSize={{ base: "42px", md: "58px" }}
+                fontWeight={500}
+                color="mauve.7"
+                lineHeight={0.9}
+                style={{ minWidth: "104px" }}
               >
                 {step.n}
               </Text>
-              <Title order={3} fz="lg" fw={500} mt="md">
+              <Heading
+                as="h3"
+                flex="1"
+                fontWeight={500}
+                fontSize={{ base: "xl", md: "2xl" }}
+                style={{ letterSpacing: "-0.015em", maxWidth: "16ch" }}
+              >
                 {step.title}
-              </Title>
-              <Text c="dimmed" size="sm" mt="xs">
+              </Heading>
+              <Text flex="1" color="ink" style={{ opacity: 0.7 }} fontSize="md" lineHeight={1.6} maxW="440px">
                 {step.body}
               </Text>
-            </Card>
-          ))}
-        </SimpleGrid>
+            </Flex>
+          </Reveal>
+        ))}
       </Container>
     </Box>
   );

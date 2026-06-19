@@ -1,36 +1,38 @@
-import { Box, Group, Text } from "@mantine/core";
+import { Box, HStack, Text } from "@chakra-ui/react";
 
 export function Logo({ light = false }: { light?: boolean }) {
   return (
-    <Group gap={10} align="center" wrap="nowrap">
+    <HStack gap="10px" align="center" wrap="nowrap">
       <Box
-        w={26}
-        h={26}
+        w="24px"
+        h="24px"
         style={{
-          borderRadius: 8,
           display: "grid",
           placeItems: "center",
-          background: light ? "#ffffff" : "var(--mantine-color-mauve-7)",
+          borderRadius: 0,
+          background: light
+            ? "#ffffff"
+            : "linear-gradient(135deg, var(--chakra-colors-mauve-6), var(--chakra-colors-mauve-8))",
         }}
       >
         <Box
-          w={9}
-          h={9}
+          w="8px"
+          h="8px"
           style={{
-            borderRadius: 999,
-            background: light ? "var(--mantine-color-mauve-7)" : "#ffffff",
+            borderRadius: 0,
+            background: light ? "var(--chakra-colors-mauve-7)" : "#ffffff",
           }}
         />
       </Box>
       <Text
-        fz={19}
-        fw={500}
-        ff="var(--font-fraunces), Georgia, serif"
-        c={light ? "white" : "black"}
+        fontSize="19px"
+        fontWeight={500}
+        fontFamily="heading"
+        color={light ? "white" : "ink"}
         style={{ letterSpacing: "-0.01em" }}
       >
         Mauve Base
       </Text>
-    </Group>
+    </HStack>
   );
 }

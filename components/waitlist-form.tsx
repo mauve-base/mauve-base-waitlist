@@ -1,15 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Button, Flex, Text, TextInput } from "@mantine/core";
+import { Box, Button, Flex, Input, Text } from "@chakra-ui/react";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export function WaitlistForm({
-  onDark = false,
-}: {
-  onDark?: boolean;
-}) {
+export function WaitlistForm() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "done">("idle");
   const [error, setError] = useState<string | null>(null);
@@ -53,13 +49,9 @@ export function WaitlistForm({
           alignItems: "center",
           gap: 12,
           padding: "14px 16px",
-          borderRadius: "var(--mantine-radius-md)",
-          background: onDark
-            ? "rgba(255,255,255,0.1)"
-            : "var(--mantine-color-mauve-0)",
-          border: onDark
-            ? "1px solid rgba(255,255,255,0.25)"
-            : "1px solid var(--mantine-color-mauve-2)",
+          borderRadius: 0,
+          background: "#ffffff",
+          border: "1px solid rgba(36, 24, 38, 0.12)",
         }}
       >
         <Box
@@ -69,9 +61,9 @@ export function WaitlistForm({
             placeItems: "center",
             width: 24,
             height: 24,
-            borderRadius: 999,
-            background: onDark ? "#fff" : "var(--mantine-color-mauve-7)",
-            color: onDark ? "var(--mantine-color-mauve-7)" : "#fff",
+            borderRadius: 0,
+            background: "var(--chakra-colors-mauve-7)",
+            color: "#fff",
           }}
         >
           <svg
@@ -88,7 +80,7 @@ export function WaitlistForm({
             <path d="M20 6 9 17l-5-5" />
           </svg>
         </Box>
-        <Text size="sm" c={onDark ? "white" : "black"}>
+        <Text fontSize="sm" color="ink">
           You&rsquo;re on the list. We&rsquo;ll reach out as we onboard vendors.
         </Text>
       </Box>
@@ -96,7 +88,7 @@ export function WaitlistForm({
   }
 
   return (
-    <Box w="100%" className={onDark ? "form-on-dark" : undefined}>
+    <Box w="100%">
       <form onSubmit={handleSubmit} noValidate>
         <input
           type="text"
@@ -114,34 +106,52 @@ export function WaitlistForm({
             opacity: 0,
           }}
         />
-        <Flex gap="sm" direction={{ base: "column", xs: "row" }} align="start">
-          <TextInput
-            type="email"
-            inputMode="email"
-            autoComplete="email"
-            placeholder="you@company.com"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.currentTarget.value);
-              if (error) setError(null);
-            }}
-            error={error}
-            size="md"
-            radius="md"
-            aria-label="Work email"
-            style={{ flex: 1, width: "100%" }}
-          />
+        <Flex gap="10px" direction={{ base: "column", sm: "row" }} align="flex-start">
+          <Box flex="1" w="100%">
+            <Input
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              placeholder="you@company.com"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.currentTarget.value);
+                if (error) setError(null);
+              }}
+              size="md"
+              borderRadius="0"
+              bg="white"
+              borderColor={error ? "red.500" : "rgba(36, 24, 38, 0.18)"}
+              color="ink"
+              _placeholder={{ color: "rgba(36, 24, 38, 0.45)" }}
+              _focusVisible={{
+                borderColor: "mauve.7",
+                boxShadow: "0 0 0 1px var(--chakra-colors-mauve-7)",
+              }}
+              aria-label="Work email"
+              aria-invalid={error ? true : undefined}
+              w="100%"
+            />
+          </Box>
           <Button
             type="submit"
             size="md"
-            radius="md"
-            color="mauve"
-            variant={onDark ? "white" : "filled"}
+            borderRadius="0"
+            px="22px"
+            fontWeight={500}
+            bg="mauve.7"
+            color="white"
+            _hover={{ bg: "mauve.8" }}
             loading={status === "loading"}
           >
             Join waitlist
           </Button>
         </Flex>
+        {error ? (
+          <Text color="red.500" fontSize="sm" mt="8px">
+            {error}
+          </Text>
+        ) : null}
       </form>
     </Box>
   );

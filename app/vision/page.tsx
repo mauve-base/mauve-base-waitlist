@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
-import { Box, Container, SimpleGrid, Stack, Text, Title } from "@mantine/core";
+import { Box, Container, Flex, Heading, SimpleGrid, Stack, Text } from "@chakra-ui/react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { WaitlistForm } from "@/components/waitlist-form";
+import { TrustGraphFigure } from "@/components/trust-graph-figure";
+import { Reveal } from "@/components/reveal";
+import { Em, FolioSection, Label, RULE, SectionHeading, StatBand } from "@/components/editorial";
 
 export const metadata: Metadata = {
   title: "Vision — Mauve Base",
@@ -31,188 +34,220 @@ const PRINCIPLES = [
   },
 ];
 
-function SectionHeading({ children }: { children: React.ReactNode }) {
-  return (
-    <Title
-      order={2}
-      style={{ fontSize: "clamp(1.6rem, 3vw, 2.1rem)", letterSpacing: "-0.015em" }}
-    >
-      {children}
-    </Title>
-  );
-}
+// Visual marks for each conviction (in place of 01/02/03).
+const PRINCIPLE_ICONS = [
+  // Trust is the moat — shield + check
+  <svg key="moat" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M12 3 19 6v5.2c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V6l7-3Z" />
+    <path d="m9 12 2 2 4-4" />
+  </svg>,
+  // Signals over spam — broadcast
+  <svg key="signals" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="2.2" />
+    <path d="M8 8a5.5 5.5 0 0 0 0 8" />
+    <path d="M16 8a5.5 5.5 0 0 1 0 8" />
+    <path d="M5.5 5.5a9 9 0 0 0 0 13" />
+    <path d="M18.5 5.5a9 9 0 0 1 0 13" />
+  </svg>,
+  // Local first — map pin
+  <svg key="local" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M12 21c4-4.2 6-7.3 6-10.2A6 6 0 0 0 6 10.8c0 2.9 2 6 6 10.2Z" />
+    <circle cx="12" cy="11" r="2.2" />
+  </svg>,
+];
 
 export default function Vision() {
   return (
     <Box>
       <SiteHeader />
 
-      {/* Hero */}
-      <Container size="md" pt={{ base: 56, sm: 96 }} pb={{ base: 40, sm: 64 }}>
-        <Stack gap="lg" className="fade-up">
-          <Text
-            fz="sm"
-            fw={600}
-            c="mauve.7"
-            style={{ letterSpacing: "0.1em", textTransform: "uppercase" }}
-          >
-            Our vision
-          </Text>
-          <Title
-            order={1}
-            style={{
-              fontSize: "clamp(2.5rem, 6vw, 4rem)",
-              lineHeight: 1.05,
-              letterSpacing: "-0.025em",
-            }}
-          >
-            Outreach should start with{" "}
-            <Text span inherit fs="italic" c="mauve.7">
-              trust
-            </Text>
-            , not a cold open.
-          </Title>
-          <Text size="xl" c="dimmed" maw={720}>
-            {
-              "Mauve Base is building the trust layer for companies selling into small businesses — so the first message a vendor sends is a warm introduction, not another ignored cold email."
-            }
-          </Text>
-        </Stack>
-      </Container>
-
-      {/* Stats strip */}
+      {/* Hero — full-viewport, vertically centered */}
       <Box
-        style={{
-          borderTop: "1px solid var(--mantine-color-mauve-2)",
-          borderBottom: "1px solid var(--mantine-color-mauve-2)",
-          background: "var(--mantine-color-mauve-0)",
-        }}
+        as="section"
+        bg="paper"
+        mt={{ md: "-64px" }}
+        display={{ base: "block", md: "flex" }}
+        alignItems={{ md: "center" }}
+        minH={{ base: "auto", md: "100dvh" }}
       >
-        <SimpleGrid
-          cols={{ base: 1, sm: 3 }}
-          spacing={0}
-          px={{ base: 24, sm: 32, lg: 48 }}
+        <Container
+          maxW="1180px"
+          px={{ base: "24px", sm: "40px" }}
+          py={{ base: "72px", md: "56px" }}
+          w="100%"
         >
-          {STATS.map(([value, label], i) => (
-            <Box
-              key={label}
-              py={{ base: 28, sm: 40 }}
-              px={{ base: 0, sm: 28 }}
+          <Reveal>
+            <Label>Our vision</Label>
+          </Reveal>
+          <Reveal delay={0.06}>
+            <Heading
+              as="h1"
+              mt={{ base: "36px", md: "56px" }}
+              fontWeight={500}
               style={{
-                borderLeft:
-                  i === 0 ? undefined : "1px solid var(--mantine-color-mauve-2)",
+                fontSize: "clamp(2.4rem, 6.5vw, 4.6rem)",
+                lineHeight: 1.0,
+                letterSpacing: "-0.03em",
+                maxWidth: "18ch",
               }}
             >
-              <Text
-                ff="var(--font-fraunces), Georgia, serif"
-                fz={{ base: 36, sm: 44 }}
-                fw={500}
-                c="mauve.7"
-                lh={1.1}
-              >
-                {value}
-              </Text>
-              <Text c="dimmed" size="sm" mt={6}>
-                {label}
-              </Text>
-            </Box>
-          ))}
-        </SimpleGrid>
+              Outreach should start with <Em>trust</Em>, not a cold open.
+            </Heading>
+          </Reveal>
+          <Reveal delay={0.14}>
+            <Text
+              mt={{ base: "28px", md: "40px" }}
+              fontSize={{ base: "lg", md: "xl" }}
+              color="ink"
+              style={{ opacity: 0.72 }}
+              maxW="640px"
+              lineHeight={1.5}
+            >
+              Mauve Base is building the trust layer for companies selling into
+              small businesses — so the first message a vendor sends is a warm
+              introduction, not another ignored cold email.
+            </Text>
+          </Reveal>
+        </Container>
+      </Box>
+
+      {/* Stat band */}
+      <Box as="section" style={{ background: "#ffffff", borderTop: RULE, borderBottom: RULE }}>
+        <Container maxW="1180px" px={{ base: "24px", sm: "40px" }} py={{ base: "48px", md: "72px" }}>
+          <Reveal>
+            <StatBand stats={STATS} />
+          </Reveal>
+        </Container>
       </Box>
 
       {/* Problem + approach */}
-      <Container size="md" py={{ base: 56, sm: 88 }}>
-        <Stack gap={48}>
-          <Stack gap="sm" maw={760}>
-            <SectionHeading>The problem</SectionHeading>
-            <Text c="dimmed" size="lg">
-              {
-                "Selling to small businesses is mostly guesswork. Vendors can't tell which restaurants, shops, or clinics are actually ready to buy — so they spray cold outreach and hope. That volume has roughly 10×'d in the last three years, and about 98% of it goes unanswered. Buyers are exhausted; sellers are burning budget on noise."
-              }
-            </Text>
-          </Stack>
-          <Stack gap="sm" maw={760}>
-            <SectionHeading>What we&rsquo;re building</SectionHeading>
-            <Text c="dimmed" size="lg">
-              {
-                "We collect proprietary buying signals directly from small-business owners through regular panels — so we know not just when a business is ready to buy, but why. Vendors contribute the customer relationships they've already earned, and in return our AI agent writes warm introductions to prospects who already trust a vendor like them. It becomes the first tab a sales team opens before any outreach."
-              }
-            </Text>
-          </Stack>
+      <Container maxW="1180px" px={{ base: "24px", sm: "40px" }} py={{ base: "72px", md: "112px" }}>
+        <Stack gap={{ base: "64px", md: "96px" }}>
+          <Reveal>
+            <FolioSection label="The problem">
+              <SectionHeading>Selling to small businesses is mostly guesswork.</SectionHeading>
+              <Text color="ink" style={{ opacity: 0.74 }} fontSize="lg" lineHeight={1.65}>
+                Vendors can&rsquo;t tell which restaurants, shops, or clinics are
+                actually ready to buy — so they spray cold outreach and hope. That
+                volume has roughly 10&times;&rsquo;d in the last three years, and
+                about 98% of it goes unanswered. Buyers are exhausted; sellers are
+                burning budget on noise.
+              </Text>
+            </FolioSection>
+          </Reveal>
+
+          <Reveal delay={0.06}>
+            <FolioSection label="What we're building">
+              <SectionHeading>Buying signals, routed through trust.</SectionHeading>
+              <Text color="ink" style={{ opacity: 0.74 }} fontSize="lg" lineHeight={1.65}>
+                We collect proprietary buying signals directly from small-business
+                owners through regular panels — so we know not just when a business
+                is ready to buy, but why. Vendors contribute the customer
+                relationships they&rsquo;ve already earned, and in return our AI
+                agent writes warm introductions to prospects who already trust a
+                vendor like them. It becomes the first tab a sales team opens before
+                any outreach.
+              </Text>
+            </FolioSection>
+          </Reveal>
         </Stack>
       </Container>
 
-      {/* Principles */}
-      <Box
-        style={{
-          background: "var(--mantine-color-mauve-0)",
-          borderTop: "1px solid var(--mantine-color-mauve-1)",
-        }}
-      >
-        <Container size="lg" py={{ base: 56, sm: 88 }}>
-          <SectionHeading>What we believe</SectionHeading>
-          <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="xl" mt="xl">
+      {/* Principles — three columns (distinct from the home "how it works" index) */}
+      <Box as="section" style={{ background: "#ffffff", borderTop: RULE }}>
+        <Container maxW="1180px" px={{ base: "24px", sm: "40px" }} py={{ base: "64px", md: "104px" }}>
+          <Reveal>
+            <Label>What we believe</Label>
+            <Heading
+              as="h2"
+              mt="16px"
+              fontWeight={500}
+              maxW="20ch"
+              style={{
+                fontSize: "clamp(1.8rem, 3.6vw, 2.8rem)",
+                letterSpacing: "-0.02em",
+                lineHeight: 1.06,
+              }}
+            >
+              Three convictions behind everything we build.
+            </Heading>
+          </Reveal>
+
+          <SimpleGrid columns={{ base: 1, md: 3 }} gap="0px" mt={{ base: "24px", md: "72px" }}>
             {PRINCIPLES.map((p, i) => (
-              <Box key={p.title}>
-                <Text
-                  ff="var(--font-fraunces), Georgia, serif"
-                  fz={24}
-                  fw={500}
-                  c="mauve.7"
+              <Reveal key={p.title} delay={i * 0.08}>
+                <Box
+                  h="100%"
+                  pl={{ md: i === 0 ? "0px" : "44px" }}
+                  pr={{ md: "44px" }}
+                  py={{ base: "28px", md: "0px" }}
+                  borderLeftWidth={{ base: "0px", md: i === 0 ? "0px" : "1px" }}
+                  borderTopWidth={{ base: i === 0 ? "0px" : "1px", md: "0px" }}
+                  borderColor="rgba(36, 24, 38, 0.12)"
                 >
-                  {String(i + 1).padStart(2, "0")}
-                </Text>
-                <Title order={3} fz="lg" fw={500} mt="sm">
-                  {p.title}
-                </Title>
-                <Text c="dimmed" size="sm" mt="xs">
-                  {p.body}
-                </Text>
-              </Box>
+                  <Box color="mauve.7" style={{ height: 30 }}>
+                    {PRINCIPLE_ICONS[i]}
+                  </Box>
+                  <Heading
+                    as="h3"
+                    mt="20px"
+                    fontWeight={500}
+                    fontSize="xl"
+                    style={{ letterSpacing: "-0.015em" }}
+                  >
+                    {p.title}
+                  </Heading>
+                  <Text mt="12px" color="ink" style={{ opacity: 0.7 }} fontSize="md" lineHeight={1.6}>
+                    {p.body}
+                  </Text>
+                </Box>
+              </Reveal>
             ))}
           </SimpleGrid>
         </Container>
       </Box>
 
       {/* Where we're headed */}
-      <Container size="md" py={{ base: 56, sm: 88 }}>
-        <Stack gap="sm" maw={760}>
-          <SectionHeading>Where we&rsquo;re headed</SectionHeading>
-          <Text c="dimmed" size="lg">
-            {
-              "We're starting with restaurant-facing vendors in the Raleigh–Durham–Chapel Hill Triangle — point-of-sale, payments, equipment, and suppliers — and expanding across the Southeast as each vendor's customers become a panel that surfaces signals for the next. The long-term vision: a living map of which small businesses are ready to buy, and the trusted path to reach them."
-            }
-          </Text>
-        </Stack>
+      <Container maxW="1180px" px={{ base: "24px", sm: "40px" }} py={{ base: "72px", md: "112px" }}>
+        <Reveal>
+          <FolioSection label="Where we're headed">
+            <SectionHeading>A living map of who&rsquo;s ready to buy.</SectionHeading>
+            <Text color="ink" style={{ opacity: 0.74 }} fontSize="lg" lineHeight={1.65}>
+              We&rsquo;re starting with restaurant-facing vendors in the
+              Raleigh–Durham–Chapel Hill Triangle — point-of-sale, payments,
+              equipment, and suppliers — and expanding across the Southeast as each
+              vendor&rsquo;s customers become a panel that surfaces signals for the
+              next. The long-term vision: a living map of which small businesses are
+              ready to buy, and the trusted path to reach them.
+            </Text>
+            <Box mt="8px" maxW="620px">
+              <TrustGraphFigure />
+            </Box>
+          </FolioSection>
+        </Reveal>
       </Container>
 
       {/* Closing CTA */}
-      <Box style={{ background: "var(--mantine-color-mauve-9)" }}>
-        <Container size="md" py={{ base: 64, sm: 96 }}>
-          <Stack align="center" gap="lg">
-            <Title
-              order={2}
-              ta="center"
-              c="white"
-              fs="italic"
-              fw={500}
-              style={{
-                fontSize: "clamp(2rem, 4vw, 3rem)",
-                letterSpacing: "-0.02em",
-                maxWidth: 640,
-              }}
-            >
-              Be early.
-            </Title>
-            <Text ta="center" c="rgba(255,255,255,0.8)" size="lg" maw={540}>
-              {
-                "Join the vendors shaping how small businesses get reached. We'll reach out as we onboard."
-              }
-            </Text>
-            <Box maw={480} w="100%" mt="xs">
-              <WaitlistForm onDark />
-            </Box>
-          </Stack>
+      <Box as="section" style={{ background: "#ffffff", borderTop: RULE }}>
+        <Container maxW="1180px" px={{ base: "24px", sm: "40px" }} py={{ base: "72px", md: "112px" }}>
+          <Flex direction={{ base: "column", md: "row" }} gap={{ base: "36px", md: "72px" }} align={{ base: "flex-start", md: "center" }} justify="space-between">
+            <Reveal style={{ flex: "1.2" }}>
+              <Heading
+                as="h2"
+                fontWeight={500}
+                style={{ fontSize: "clamp(2rem, 5vw, 3.4rem)", letterSpacing: "-0.025em", lineHeight: 1.04, maxWidth: "12ch" }}
+              >
+                Be <Em>early</Em>.
+              </Heading>
+              <Text color="ink" style={{ opacity: 0.72 }} fontSize="lg" mt="18px" maxW="440px">
+                Reach small businesses with warm introductions, not cold outreach.
+                We&rsquo;ll reach out as we onboard.
+              </Text>
+            </Reveal>
+            <Reveal delay={0.1} style={{ flex: "1", width: "100%", maxWidth: "460px" }}>
+              <WaitlistForm />
+            </Reveal>
+          </Flex>
         </Container>
       </Box>
 

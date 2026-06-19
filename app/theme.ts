@@ -1,32 +1,69 @@
-import { createTheme, type MantineColorsTuple } from "@mantine/core";
+import { createSystem, defaultConfig, defineConfig } from "@chakra-ui/react";
 
-// Refined, slightly muted purple with a mauve undertone — sophisticated, not neon.
-const mauve: MantineColorsTuple = [
-  "#f7f4fb",
-  "#ece5f6",
-  "#d7c6ec",
-  "#c1a6e1",
-  "#ad8bd8",
-  "#9f79d2",
-  "#9268c9",
-  "#7e51b5",
-  "#6a4199",
-  "#523072",
-];
-
-export const theme = createTheme({
-  primaryColor: "mauve",
-  primaryShade: { light: 7 },
-  autoContrast: true,
-  luminanceThreshold: 0.35,
-  colors: { mauve },
-  white: "#ffffff",
-  black: "#241826",
-  defaultRadius: "md",
-  fontFamily:
-    "var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-  headings: {
-    fontFamily: "var(--font-fraunces), Georgia, 'Times New Roman', serif",
-    fontWeight: "500",
+// "Amethyst Twilight Whisper" palette (from Figma).
+// Kept on the original 0–9 `mauve` scale so existing `mauve.7` props and
+// `var(--chakra-colors-mauve-7)` references map one-to-one — mauve.7 is the
+// deep-violet primary. Magenta is a separate `accent` token.
+const config = defineConfig({
+  theme: {
+    breakpoints: {
+      sm: "48em",
+      md: "62em",
+      lg: "75em",
+      xl: "88em",
+    },
+    tokens: {
+      colors: {
+        mauve: {
+          0: { value: "#f3eff8" },
+          1: { value: "#e7dff3" },
+          2: { value: "#d6c6ec" },
+          3: { value: "#c6b4e6" }, // light lavender (palette)
+          4: { value: "#ad8fdb" },
+          5: { value: "#9a78d0" },
+          6: { value: "#6e54ae" }, // muted medium purple (palette)
+          7: { value: "#5e2d91" }, // deep violet — PRIMARY (palette)
+          8: { value: "#46217a" },
+          9: { value: "#34186f" }, // dark indigo (palette)
+        },
+        // Vivid magenta/orchid — the pop accent (palette).
+        accent: { value: "#9b27b6" },
+        accentDark: { value: "#821f9c" },
+        ink: { value: "#1e1730" },
+        // Light gray canvas (palette).
+        paper: { value: "#e7e6eb" },
+      },
+      fonts: {
+        heading: {
+          value: "var(--font-space-grotesk), 'Segoe UI', Roboto, sans-serif",
+        },
+        body: {
+          value:
+            "var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+        },
+      },
+    },
+    // Lets `colorPalette="mauve"` work with the built-in button/input recipes.
+    semanticTokens: {
+      colors: {
+        mauve: {
+          solid: { value: "{colors.mauve.7}" },
+          contrast: { value: "{colors.white}" },
+          fg: { value: "{colors.mauve.7}" },
+          muted: { value: "{colors.mauve.1}" },
+          subtle: { value: "{colors.mauve.0}" },
+          emphasized: { value: "{colors.mauve.2}" },
+          focusRing: { value: "{colors.mauve.7}" },
+        },
+      },
+    },
+  },
+  globalCss: {
+    "html, body": {
+      background: "paper",
+      color: "ink",
+    },
   },
 });
+
+export const system = createSystem(defaultConfig, config);

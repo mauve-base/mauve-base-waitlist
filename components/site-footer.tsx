@@ -1,38 +1,42 @@
-import { Box, Container, Group, Text } from "@mantine/core";
+"use client";
+
+import NextLink from "next/link";
+import { Box, chakra, Container, Flex, HStack, Text } from "@chakra-ui/react";
 import { Logo } from "@/components/logo";
+
+const Link = chakra(NextLink);
 
 export function SiteFooter() {
   return (
     <Box
-      component="footer"
-      style={{ background: "var(--mantine-color-mauve-9)" }}
+      as="footer"
+      style={{
+        background: "var(--chakra-colors-paper)",
+        borderTop: "1px solid rgba(36, 24, 38, 0.12)",
+      }}
     >
-      <Container size="xl" py="xl">
-        <Group justify="space-between" align="center" wrap="wrap" gap="md">
-          <Logo light />
-          <Group gap="lg" align="center">
-            <Text
-              component="a"
-              href="/vision"
-              className="nav-link-light"
-              size="sm"
-            >
+      <Container maxW="1200px" px={{ base: "24px", sm: "40px" }} py={{ base: "40px", sm: "56px" }}>
+        <Flex justify="space-between" align="center" wrap="wrap" gap="20px">
+          <Logo />
+          <HStack gap="24px" align="center">
+            <Link href="/vision" className="nav-link" fontSize="sm" fontWeight={500}>
               Vision
-            </Text>
-            <Text
-              component="a"
+            </Link>
+            <chakra.a
               href="mailto:hello@mauvebase.com"
-              size="sm"
-              c="white"
-              style={{ textDecoration: "none" }}
+              className="nav-link"
+              fontSize="sm"
+              fontWeight={500}
             >
               hello@mauvebase.com
-            </Text>
-          </Group>
-        </Group>
-        <Text size="xs" mt="xl" c="rgba(255,255,255,0.5)" ta="center">
-          © 2026 Mauve Base. All rights reserved.
-        </Text>
+            </chakra.a>
+          </HStack>
+        </Flex>
+        <Box mt="28px" pt="20px" style={{ borderTop: "1px solid rgba(36, 24, 38, 0.12)" }}>
+          <Text fontSize="xs" color="ink" style={{ opacity: 0.55 }}>
+            © 2026 Mauve Base. All rights reserved.
+          </Text>
+        </Box>
       </Container>
     </Box>
   );
