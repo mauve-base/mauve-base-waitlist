@@ -73,7 +73,7 @@ export async function POST(request: Request) {
   // Clicking the link twice ("already exists") is success — make sure they're
   // subscribed and their details are current.
   if (createError && /already|exist/i.test(createError.message ?? "")) {
-    await resend.contacts.update({
+    const { error: updateError } = await resend.contacts.update({
       email,
       audienceId: RESEND_AUDIENCE_ID,
       unsubscribed: false,
@@ -81,6 +81,12 @@ export async function POST(request: Request) {
       lastName,
       properties,
     });
+    // Don't swallow this: a failed update is why a re-confirming contact can end
+    // up subscribed but with blank name/company/category.
+    if (updateError) {
+      console.error("Resend confirm (contacts.update) error:", updateError);
+      return redirectTo("error");
+    }
   } else if (createError) {
     console.error("Resend confirm (contacts.create) error:", createError);
     return redirectTo("error");
