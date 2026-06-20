@@ -57,12 +57,23 @@ export function Turnstile({
     function tryRender() {
       if (cancelled || widgetIdRef.current) return;
       if (SITE_KEY && window.turnstile && containerRef.current) {
-        widgetIdRef.current = window.turnstile.render(containerRef.current, {
-          sitekey: SITE_KEY,
-          callback: (token) => onToken(token),
-          "expired-callback": () => onToken(""),
-          "error-callback": () => onToken(""),
-        });
+        try {
+          // Clear any leftover widget node first. Strict Mode (dev double-mount),
+          // HMR re-mounts, and soft navigations can leave a stale iframe in the
+          // container, and turnstile.render() THROWS if the node isn't empty.
+          containerRef.current.innerHTML = "";
+          widgetIdRef.current = window.turnstile.render(containerRef.current, {
+            sitekey: SITE_KEY,
+            callback: (token) => onToken(token),
+            "expired-callback": () => onToken(""),
+            "error-callback": () => onToken(""),
+          });
+        } catch {
+          // Render failed (usually "container already contains a widget"). Reset
+          // and retry instead of dead-ending with a permanently blank slot.
+          widgetIdRef.current = null;
+          if (attempts++ < 150) setTimeout(tryRender, 100);
+        }
         return;
       }
       if (attempts++ < 150) setTimeout(tryRender, 100); // retry up to ~15s
@@ -78,8 +89,10 @@ export function Turnstile({
         } catch {
           // widget already gone — nothing to do
         }
-        widgetIdRef.current = null;
       }
+      widgetIdRef.current = null;
+      // Drop any iframe the widget left behind so the next mount renders clean.
+      if (containerRef.current) containerRef.current.innerHTML = "";
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
