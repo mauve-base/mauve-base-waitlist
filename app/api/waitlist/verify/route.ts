@@ -14,14 +14,14 @@ const USED_TTL_SEC = 48 * 60 * 60;
 
 // Resend segments are static membership lists (the API has no filter rules), so
 // we must add each contact to the segment matching its category ourselves. IDs
-// come from env (copy them from Resend → Audience → Segments). A category with
-// no configured segment just stays in the default "General" segment, with its
-// `category` property still set — assignment is best-effort, never fatal.
+// come from env (copy them from Resend → Audience → Segments). Only vendor and
+// restaurant have their own segment; "other" intentionally has none, so those
+// contacts stay in the default "General" segment (still tagged with the
+// `category` property). Assignment is best-effort, never fatal.
 function segmentIdForCategory(category: string): string | undefined {
   return {
     vendor: process.env.RESEND_SEGMENT_VENDOR_ID,
     restaurant: process.env.RESEND_SEGMENT_RESTAURANT_ID,
-    other: process.env.RESEND_SEGMENT_OTHER_ID,
   }[category];
 }
 
