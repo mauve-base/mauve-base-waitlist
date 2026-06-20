@@ -44,28 +44,34 @@ export function Turnstile({
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
 
-  function renderWidget() {
-    if (
-      !SITE_KEY ||
-      !window.turnstile ||
-      !containerRef.current ||
-      widgetIdRef.current
-    ) {
-      return;
-    }
-    widgetIdRef.current = window.turnstile.render(containerRef.current, {
-      sitekey: SITE_KEY,
-      callback: (token) => onToken(token),
-      "expired-callback": () => onToken(""),
-      "error-callback": () => onToken(""),
-    });
-  }
-
-  // Render once the script is available (covers client-side navigations where
-  // the script already loaded), and clean up on unmount.
+  // Render as soon as the Turnstile script global is available. We deliberately
+  // do NOT rely on <Script onLoad>: on client-side navigations the script is
+  // already cached, so onLoad never fires again — which left the widget
+  // intermittently unrendered. Instead we poll briefly for window.turnstile and
+  // render the instant it's ready, which covers both fresh loads and soft navs.
   useEffect(() => {
-    renderWidget();
+    if (!SITE_KEY) return;
+    let cancelled = false;
+    let attempts = 0;
+
+    function tryRender() {
+      if (cancelled || widgetIdRef.current) return;
+      if (SITE_KEY && window.turnstile && containerRef.current) {
+        widgetIdRef.current = window.turnstile.render(containerRef.current, {
+          sitekey: SITE_KEY,
+          callback: (token) => onToken(token),
+          "expired-callback": () => onToken(""),
+          "error-callback": () => onToken(""),
+        });
+        return;
+      }
+      if (attempts++ < 150) setTimeout(tryRender, 100); // retry up to ~15s
+    }
+
+    tryRender();
+
     return () => {
+      cancelled = true;
       if (widgetIdRef.current && window.turnstile) {
         try {
           window.turnstile.remove(widgetIdRef.current);
@@ -98,7 +104,6 @@ export function Turnstile({
       <Script
         src="https://challenges.cloudflare.com/turnstile/v0/api.js"
         strategy="afterInteractive"
-        onLoad={renderWidget}
       />
       <div ref={containerRef} />
     </>
