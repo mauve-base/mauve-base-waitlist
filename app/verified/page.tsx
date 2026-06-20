@@ -34,13 +34,13 @@ const COPY: Record<
   },
   invalid: {
     label: "Invalid link",
-    heading: <>This link isn't valid.</>,
+    heading: <>This link isn&rsquo;t valid.</>,
     body: "We couldn't read this confirmation link. Please join the waitlist again to get a new one.",
     cta: "Join the waitlist",
   },
   error: {
     label: "Something went wrong",
-    heading: <>We couldn't confirm your email.</>,
+    heading: <>We couldn&rsquo;t confirm your email.</>,
     body: "Something went wrong on our end. Please try joining the waitlist again in a moment.",
     cta: "Join the waitlist",
   },

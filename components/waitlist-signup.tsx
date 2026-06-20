@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Box, Button, Flex, Input, Stack, Text } from "@chakra-ui/react";
+import { Turnstile, turnstileEnabled } from "@/components/turnstile";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -49,17 +50,22 @@ export function WaitlistSignup({ initialEmail = "" }: { initialEmail?: string })
   const [category, setCategory] = useState<Category | null>(null);
   const [role, setRole] = useState("");
   const [hp, setHp] = useState(""); // honeypot — stays empty for real users
+  const [token, setToken] = useState(""); // Turnstile token
+  const [tsReset, setTsReset] = useState(0); // bump to force a fresh challenge
   const [status, setStatus] = useState<"idle" | "loading" | "done">("idle");
   const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (status === "loading") return; // guard against double-submit
     if (!name.trim()) return setError("Please enter your name.");
     if (!company.trim()) return setError("Please enter your company.");
     if (!EMAIL_RE.test(email.trim())) return setError("Please enter a valid email.");
     if (!category) return setError("Please tell us what you are.");
     if (category === "other" && !role.trim())
       return setError("Please tell us what you are.");
+    if (turnstileEnabled && !token)
+      return setError("Please complete the verification below.");
 
     setError(null);
     setStatus("loading");
@@ -73,6 +79,7 @@ export function WaitlistSignup({ initialEmail = "" }: { initialEmail?: string })
           email: email.trim(),
           category,
           role: role.trim(),
+          turnstileToken: token,
           website: hp,
         }),
       });
@@ -80,12 +87,17 @@ export function WaitlistSignup({ initialEmail = "" }: { initialEmail?: string })
       if (!res.ok || !data.ok) {
         setError(data.error ?? "Something went wrong. Please try again.");
         setStatus("idle");
+        // The token is single-use; force a fresh challenge before any retry.
+        setToken("");
+        setTsReset((n) => n + 1);
         return;
       }
       setStatus("done");
     } catch {
       setError("Network error. Please check your connection and try again.");
       setStatus("idle");
+      setToken("");
+      setTsReset((n) => n + 1);
     }
   }
 
@@ -240,6 +252,8 @@ export function WaitlistSignup({ initialEmail = "" }: { initialEmail?: string })
               />
             </Stack>
           ) : null}
+
+          <Turnstile onToken={setToken} resetSignal={tsReset} />
 
           <Button
             type="submit"
