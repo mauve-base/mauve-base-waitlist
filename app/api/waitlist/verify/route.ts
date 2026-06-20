@@ -12,6 +12,19 @@ import { wasTokenUsed, rememberTokenUsed } from "@/lib/waitlist-replay";
 // the mutation a POST stops them from silently auto-confirming signups.
 const USED_TTL_SEC = 48 * 60 * 60;
 
+// Resend segments are static membership lists (the API has no filter rules), so
+// we must add each contact to the segment matching its category ourselves. IDs
+// come from env (copy them from Resend → Audience → Segments). A category with
+// no configured segment just stays in the default "General" segment, with its
+// `category` property still set — assignment is best-effort, never fatal.
+function segmentIdForCategory(category: string): string | undefined {
+  return {
+    vendor: process.env.RESEND_SEGMENT_VENDOR_ID,
+    restaurant: process.env.RESEND_SEGMENT_RESTAURANT_ID,
+    other: process.env.RESEND_SEGMENT_OTHER_ID,
+  }[category];
+}
+
 export async function POST(request: Request) {
   const origin = getOrigin(request);
   const redirectTo = (status: string) =>
@@ -71,6 +84,20 @@ export async function POST(request: Request) {
   } else if (createError) {
     console.error("Resend confirm (contacts.create) error:", createError);
     return redirectTo("error");
+  }
+
+  // Sort the contact into its category's segment. Idempotent (re-adding an
+  // existing member is a no-op) and non-fatal: the contact is already
+  // subscribed, so a segment failure shouldn't fail the confirmation.
+  const segmentId = segmentIdForCategory(category);
+  if (segmentId) {
+    const { error: segmentError } = await resend.contacts.segments.add({
+      email,
+      segmentId,
+    });
+    if (segmentError) {
+      console.error("Resend confirm (segments.add) error:", segmentError);
+    }
   }
 
   // Only mark used after a successful write, so a transient Resend error still
