@@ -19,6 +19,10 @@ export default function Home() {
         as="section"
         bg="paper"
         mt={{ md: "-64px" }}
+        // Offset the flex centering by the sticky header's height so the content
+        // is centered within the *visible* area below the header, not the full
+        // viewport (the top 64px sits behind the header).
+        pt={{ md: "64px" }}
         display={{ base: "block", md: "flex" }}
         alignItems={{ md: "center" }}
         minH={{ base: "auto", md: "100dvh" }}

@@ -1,29 +1,17 @@
-import { Box, HStack, Text } from "@chakra-ui/react";
+import Image from "next/image";
+import { HStack, Text } from "@chakra-ui/react";
+import mauveLogo from "@/public/mauve-base-logo.png";
 
 export function Logo({ light = false }: { light?: boolean }) {
   return (
     <HStack gap="10px" align="center" wrap="nowrap">
-      <Box
-        w="24px"
-        h="24px"
-        style={{
-          display: "grid",
-          placeItems: "center",
-          borderRadius: 0,
-          background: light
-            ? "#ffffff"
-            : "linear-gradient(135deg, var(--chakra-colors-mauve-6), var(--chakra-colors-mauve-8))",
-        }}
-      >
-        <Box
-          w="8px"
-          h="8px"
-          style={{
-            borderRadius: 0,
-            background: light ? "var(--chakra-colors-mauve-7)" : "#ffffff",
-          }}
-        />
-      </Box>
+      <Image
+        src={mauveLogo}
+        alt=""
+        width={28}
+        height={28}
+        style={{ display: "block", borderRadius: "6px" }}
+      />
       <Text
         fontSize="19px"
         fontWeight={500}
